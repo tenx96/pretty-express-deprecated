@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express";
 
-import { Server, Controller, get } from "../../core/src";
+import { Server, Controller, get } from "pretty-express";
 const app = express();
 
 @Controller("/api/v1")

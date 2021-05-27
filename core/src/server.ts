@@ -33,11 +33,11 @@ export class Server {
       controllerList.forEach((controller) => {
         const controllerData = getDataFromControllerClass(controller);
 
-        console.log(controllerData)
+   
 
         const functionsData = getDataFromAllDecoratedFunction(controller);
 
-        console.log(functionsData)
+
 
         const routerData = buildRouterForController(
           functionsData,
