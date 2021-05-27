@@ -1,5 +1,5 @@
 {
-  "name": "express-decorators",
+  "name": "pretty-express",
   "version": "1.0.0",
   "description": "Decorators for express RequestHandlers",
   "main": "dist/index.js",
