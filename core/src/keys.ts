@@ -16,3 +16,8 @@ export const CONTROLLER_META_KEYS = {
   baseUrl: "baseUrl",
 };
 
+
+export const MIDDLEWARE_META_KEYS = {
+  middlewares: Symbol.for("middlewares"),
+  errorMiddlewares: Symbol.for("errorMiddlewares"),
+};
