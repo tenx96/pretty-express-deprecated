@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction, RequestHandler } from "express";
+import { AUTH_CREDENTIAL_KEY } from "../keys";
 
 export interface UserCredentials {
   email: string;
@@ -37,7 +38,7 @@ export abstract class JwtAuthenticationStrategy {
         const token = this.extractToken(req).toString();
         const credentials = await this.verifyToken(token);
         const verifiedCredentials = await this.verifyCredentials(credentials , role);
-        req.currentUser = verifiedCredentials;
+        req[AUTH_CREDENTIAL_KEY] = verifiedCredentials;
         next();
       } catch (err) {
         return res.status(401).json({

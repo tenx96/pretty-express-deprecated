@@ -31,3 +31,11 @@ export const VALIDATOR_META_KEYS = {
   schema : Symbol.for("Validation Schema"),
   options : Symbol.for("Options")
 }
+
+export const PARAMETER_META_KEYS = {
+  requestBody : Symbol.for("request body"),
+  requestParams : Symbol.for("request params"),
+  authUser : Symbol.for("auth user"),
+}
+
+export const AUTH_CREDENTIAL_KEY = "currentUser"
