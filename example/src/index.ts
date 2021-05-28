@@ -1,27 +1,33 @@
 import express, {   NextFunction, Request, Response } from "express";
 
-import { Server, Controller, get, middleware, post , errorMiddleware } from "pretty-express";
+import { Server, Controller, get, middleware, post , errorMiddleware, authenticate,  } from "pretty-express";
 const app = express();
 
+import {MyJwtAuthService} from "./authentication.service"
 
 
-@middleware(classMiddleware)
+const testService = new MyJwtAuthService()
+
 @errorMiddleware(demoError)
-@Controller("/api/v1")
+@Controller()
 class UserController {
  
 
-  @middleware(demoMiddleware, demoMiddleware2)
+  
   @get("/")
+  
   async getUsers(req: Request, res: Response, next : NextFunction) {
-    return next(new Error("I am bad!"))
-    return res.status(200).send("Welcome to my api server");
+    const token = await testService.generateToken({email : "test@gmail.com" , id : "abc" , role:"admin"})
+    return res.status(200).send(token);
   }
 
+ 
   @middleware(demoMiddleware)
+  @authenticate("jwt" , {role : "farmer"})
   @post("/")
   async addUsers(req: Request, res: Response) {
-    return res.status(200).send("No I wont add users");
+
+    return res.status(200).send("OMG IT WORKS!")
   }
 }
 export class ApplicationServer extends Server {
@@ -31,7 +37,9 @@ export class ApplicationServer extends Server {
 
 
   start() {
+    this.addAuthenticationStrategies([testService])
     this.addControllersToServer([new UserController()]);
+  
 
     const port = process.env.PORT || 3000;
     app.listen(port, () => {

@@ -126,3 +126,8 @@ function _addMetaDataToClass(type: string, target: Object, baseUrl: string) {
   Reflect.defineMetadata(CONTROLLER_META_KEYS.type, type, target);
   Reflect.defineMetadata(CONTROLLER_META_KEYS.baseUrl, baseUrl || "", target);
 }
+
+
+
+
+

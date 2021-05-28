@@ -1,6 +1,6 @@
 {
   "name": "pretty-express",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Decorators for express RequestHandlers",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
