@@ -25,3 +25,9 @@ export const AUTH_META_KEYS = {
   role: Symbol.for("role"),
   authService : Symbol.for("auth service")
 };
+
+
+export const VALIDATOR_META_KEYS = {
+  schema : Symbol.for("Validation Schema"),
+  options : Symbol.for("Options")
+}

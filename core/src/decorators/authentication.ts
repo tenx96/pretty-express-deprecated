@@ -1,4 +1,4 @@
-import { AUTH_META_KEYS } from "./keys";
+import { AUTH_META_KEYS } from "../keys";
 
 export function authenticate(
   strategy: string,

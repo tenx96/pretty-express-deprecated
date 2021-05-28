@@ -1,11 +1,13 @@
 {
   "name": "pretty-express",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Decorators for express RequestHandlers",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "dependencies": {
     "body-parser": "^1.19.0",
+    "class-transformer": "^0.4.0",
+    "class-validator": "^0.13.1",
     "express": "^4.17.1"
   },
   "devDependencies": {

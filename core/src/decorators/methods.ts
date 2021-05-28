@@ -1,4 +1,4 @@
-import { HTTP_METHOD, CONTROLLER_META_KEYS, FUNCTION_META_KEYS } from "./keys"
+import { HTTP_METHOD, CONTROLLER_META_KEYS, FUNCTION_META_KEYS } from "../keys"
 
 
 /**
