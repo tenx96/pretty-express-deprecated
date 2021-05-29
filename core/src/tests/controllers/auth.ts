@@ -43,9 +43,15 @@ export class AuthController {
     return { message: "Authenticated ", auth };
   }
 
-  @authenticate("jwt" , {role : "user"})
+  @authenticate("jwt" , {role : ["user"]})
   @post("/role")
   async roleProtected(@requestBody data : Creds) {
+    return { message: "Recieved a body ", data };
+  }
+
+  @authenticate("jwt" , {role : ["user" , "admin"]})
+  @post("/multi")
+  async multiroles(@requestBody data : Creds) {
     return { message: "Recieved a body ", data };
   }
 }

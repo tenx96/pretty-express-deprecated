@@ -50,7 +50,7 @@ export function getDataFromAuthenticationStrategy(
         Reflect.getOwnMetadata(AUTH_META_KEYS.strategy, prototype) || "";
   
       const authRole =
-        Reflect.getOwnMetadata(AUTH_META_KEYS.role, prototype) || "";
+        Reflect.getOwnMetadata(AUTH_META_KEYS.role, prototype) || [];
   
       // get validation data
       const validationSchema = Reflect.getOwnMetadata(

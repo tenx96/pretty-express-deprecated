@@ -13,7 +13,7 @@ export abstract class JwtAuthenticationStrategy {
   abstract verifyToken(token: string): Promise<Object>;
 
   abstract verifyCredentials(
-    credentials: UserCredentials | any , requiredRole? : string
+    credentials: UserCredentials | any , requiredRole? : string[]
   ): Promise<Object>;
 
   extractToken(req: Request) {
@@ -32,7 +32,7 @@ export abstract class JwtAuthenticationStrategy {
     }
   }
 
-   buildMiddleware(role? : string): RequestHandler {
+   buildMiddleware(role? : string[]): RequestHandler {
     return async (req: any, res: Response, next: NextFunction) => {
       try {
         const token = this.extractToken(req).toString();

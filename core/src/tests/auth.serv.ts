@@ -25,11 +25,11 @@ export class MyJwtAuthService extends JwtAuthenticationStrategy {
   }
   async verifyCredentials(
     credentials: UserCredentials,
-    requiredRole?: string
+    requiredRole?: string[]
   ): Promise<Object> {
     try {
-      if (requiredRole) {
-        if (credentials.role !== requiredRole) {
+      if (requiredRole && requiredRole.length > 0) {
+        if (!requiredRole.includes(credentials.role)) {
           throw new Error("User is not of required role. Access Denied!");
         }
       }

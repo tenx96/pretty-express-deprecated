@@ -84,6 +84,23 @@ describe("AUTHENTICATION tests", () => {
           });
 
 
+
+          it("use admin - token to access a path only availabe for two role : 'user' and 'admin'. Should pass with status 200", () => {
+            request
+              .agent(app)
+              .post("/auth/multi")
+              .set({
+                  Authorization: `Bearer ${token}`,
+              })
+              .expect("Content-Type", /json/)
+              .expect(200)
+              .end((err, res) => {
+                if (err) throw err;
+           
+              });
+          });
+
+
       });
     });
   });

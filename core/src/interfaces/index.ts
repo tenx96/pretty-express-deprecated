@@ -42,7 +42,7 @@ export interface IRouterData {
   
   export interface IAuthenticationData {
     strategy: string;
-    role: string;
+    role: string[];
   }
   
   export interface IValidationData {

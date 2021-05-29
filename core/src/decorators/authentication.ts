@@ -2,7 +2,7 @@ import { AUTH_META_KEYS } from "../keys";
 
 export function authenticate(
   strategy: string,
-  data?: { role: string }
+  data?: { role: string[] }
 ): Function {
   return (target: Object, propertyKey: string | symbol) => {
     Reflect.defineMetadata(
@@ -14,7 +14,7 @@ export function authenticate(
 
     Reflect.defineMetadata(
       AUTH_META_KEYS.role,
-      data && data.role ? data.role : "",
+      data && data.role ? data.role : [],
       target,
       propertyKey
     );
