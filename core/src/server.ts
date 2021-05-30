@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import { Express, NextFunction, Request, Response, Router } from "express";
+import express,{ Express, NextFunction, Request, Response, Router } from "express";
 import { AUTH_CREDENTIAL_KEY } from "./keys";
 import { JwtAuthenticationStrategy } from "./services/authentication.service";
 import { ValidationService } from "./services/validation.interface";
@@ -25,9 +25,19 @@ export class Server {
   private validationService: ValidationService;
 
   constructor(protected _app: Express) {
+    this.setupParser()
     this.authStrategies = new Map();
     this.validationService = new ServerValidationService();
   }
+
+  /**
+   * set up body-parsers
+   */
+  public setupParser(){
+    this._app.use(express.json())
+    this._app.use(express.urlencoded({extended : true}))
+  }
+
 
   /**
    *
