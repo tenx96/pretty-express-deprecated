@@ -117,7 +117,7 @@ function buildRouterForController(
     }
 
     // attach controller level validator
-    if (controllerMetaData.validationData) {
+    if (controllerMetaData.validationData && controllerMetaData.validationData.schema) {
       const { schema, options } = controllerMetaData.validationData;
       router.use(validationService.validationMiddleware(schema, options));
     }
@@ -138,7 +138,7 @@ function buildRouterForController(
       }
 
       // add request level middlewares
-      if (fdata.validationData) {
+      if (fdata.validationData && fdata.validationData.schema) {
         const { schema, options } = fdata.validationData;
 
         fdata.middlewares.push(
