@@ -1,8 +1,20 @@
-
-import { IsEmail, IsOptional, IsString, ValidationError, Validator } from "class-validator";
+import {
+  IsEmail,
+  IsOptional,
+  IsString,
+  ValidationError,
+  Validator,
+} from "class-validator";
 import { HTTP_METHOD } from "../../keys";
-import { Controller, get, post, patch, del, requestBody,validate } from "../../";
-
+import {
+  Controller,
+  get,
+  post,
+  patch,
+  del,
+  requestBody,
+  validate,
+} from "../../";
 
 export class CreatePostRequest {
   @IsEmail()
@@ -11,26 +23,22 @@ export class CreatePostRequest {
   @IsString()
   password: string;
 
-
   @IsOptional()
   @IsString()
-  name : string;
+  name: string;
 }
-
-
 
 @Controller("/validator")
 export class ValidateController {
-    
-@validate(CreatePostRequest) 
+  @validate(CreatePostRequest)
   @get("/")
   validateWIthSchema(@requestBody data: any) {
-    return { message : "received data" , data };
+    return { message: "received data", data };
   }
 
-  @validate(CreatePostRequest , {whitelist : true , }) 
+  @validate(CreatePostRequest, { whitelist: true })
   @post("/")
   whiteListExample(@requestBody data: any) {
-    return { message : "received data" , data };
+    return { message: "received data", data };
   }
 }

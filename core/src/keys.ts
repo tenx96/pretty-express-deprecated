@@ -3,6 +3,7 @@ export const HTTP_METHOD = {
   POST: "post",
   PATCH: "patch",
   DELETE: "delete",
+  PUT: "put"
 };
 
 export const FUNCTION_META_KEYS = {

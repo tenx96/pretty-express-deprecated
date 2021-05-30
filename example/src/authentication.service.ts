@@ -1,4 +1,4 @@
-import { AuthStrategy, JwtAuthenticationStrategy } from "pretty-express";
+import { JwtAuthenticationStrategy, AuthStrategy } from "pretty-express";
 import jwt from "jsonwebtoken";
 
 const jwtKey = "Auth Key";
@@ -8,7 +8,6 @@ export interface UserCredentials {
   email: string;
   role?: string;
 }
-
 
 @AuthStrategy("jwt")
 export class MyJwtAuthService extends JwtAuthenticationStrategy {
@@ -25,11 +24,11 @@ export class MyJwtAuthService extends JwtAuthenticationStrategy {
   }
   async verifyCredentials(
     credentials: UserCredentials,
-    requiredRole?: string
+    requiredRole?: string[]
   ): Promise<Object> {
     try {
-      if (requiredRole) {
-        if (credentials.role !== requiredRole) {
+      if (requiredRole && requiredRole.length > 0) {
+        if (requiredRole.includes(credentials.role)) {
           throw new Error("User is not of required role. Access Denied!");
         }
       }

@@ -141,6 +141,8 @@ function buildRouterForController(
       if (fdata.validationData && fdata.validationData.schema) {
         const { schema, options } = fdata.validationData;
 
+       
+
         fdata.middlewares.push(
           validationService.validationMiddleware(schema, options)
         );

@@ -1,7 +1,7 @@
 import { ValidatorOptions } from "class-validator";
 import { Response, NextFunction, Request, RequestHandler } from "express";
 
-export type Constructor = { new (): any };
+export type Constructor<T> = { new (): T };
 
 export interface ValidationService {
   /**
@@ -10,7 +10,7 @@ export interface ValidationService {
    * @returns middleware for body validation
    */
 
-  validationMiddleware(type: Constructor, options? : ValidatorOptions): RequestHandler;
+  validationMiddleware(type: Constructor<any>, options? : ValidatorOptions): RequestHandler;
   /**
    *
    * @param err express error

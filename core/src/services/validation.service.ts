@@ -11,16 +11,22 @@ export class ServerValidationService implements ValidationService {
    */
 
   validationMiddleware(
-    type: Constructor,
+    type: Constructor<any>,
     options?: ValidatorOptions
   ): RequestHandler {
     let validator = new Validator();
 
     return (req, res, next) => {
+
+      console.log("Schema Raw: "  , type)
+
       let input: any = plainToClass(type, req.body);
       if (!options) {
         options = {};
       }
+
+      console.log("Schema : "  , input)
+
 
       let errors = validator.validateSync(input, options);
 
