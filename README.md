@@ -117,6 +117,41 @@ server.start();
 ````
 
 
+# returning a response
+
+> By default the returned object of a decorated fucntion is returned as a JSON object with a status : 200
+
+
+```typescript
+  @del("/")
+  async de(req: Request, res: Response, next: NextFunction) {
+    return { method: "delete" };
+  }
+```
+
+> To return a response with a custom status code. Simply return an object of type HttpResponse(status, object)
+
+```typescript
+  @post("/")
+  async putFunction(req: Request, res: Response, next: NextFunction) {
+    return new HttpResponse(201, { message: "created" });
+  }
+```
+
+> to return an error response, just throw an error of type HttpError
+
+
+````typescript
+  @patch("/")
+  async errprFunction(req: Request, res: Response, next: NextFunction) {
+    throw new HttpError(400, "Hello Error!");
+  }
+````
+
+
+
+
+
 
 
 
@@ -330,9 +365,11 @@ export class ApplicationServer extends Server {
 
 
 
-### you can now use this authentication with the @authenticate decorator on your functions
+### you can now use this authentication with the @authenticate decorator on your functions and controlllers
 
+<br>
 
+> Request level
 ````typescript
   @authenticate("jwt" , {role : ["admin"]})
   @post("/")
@@ -340,6 +377,26 @@ export class ApplicationServer extends Server {
     return  {data};
   }
 ````
+
+> Controller level
+````typescript
+@authenticate("jwt" , {role : ["user"]})
+@Controller("/api/users")
+class UserController {
+  @get("/")
+  async getUsers(@requestBody data : any, req: Request, res: Response, next: NextFunction) {
+    return { message: "hello pretty express" };
+  }
+
+  @authenticate("jwt" , {role : ["admin"]})
+  @post("/")
+  async addUsers(@requestBody data: UserCredentials , @requestParams params : any , @authUser authUser : any) {
+    return  {data};
+  }
+}
+
+````
+
 
 
 > if no role is provided, it will skip the role check
