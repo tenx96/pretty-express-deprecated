@@ -125,7 +125,7 @@ server.start();
 
 ```typescript
   @del("/")
-  async de(req: Request, res: Response, next: NextFunction) {
+  async someFunction(req: Request, res: Response, next: NextFunction) {
     return { method: "delete" };
   }
 ```
@@ -134,7 +134,7 @@ server.start();
 
 ```typescript
   @post("/")
-  async putFunction(req: Request, res: Response, next: NextFunction) {
+  async someFunction(req: Request, res: Response, next: NextFunction) {
     return new HttpResponse(201, { message: "created" });
   }
 ```
@@ -144,7 +144,7 @@ server.start();
 
 ````typescript
   @patch("/")
-  async errprFunction(req: Request, res: Response, next: NextFunction) {
+  async someFunction(req: Request, res: Response, next: NextFunction) {
     throw new HttpErrorResponse(400, "Hello Error!");
   }
 ````
@@ -153,7 +153,7 @@ server.start();
 
 ```typescript
 @post("/user")
-  async test() {
+  async someFunction() {
     throw HttpErrorResponse.NOT_IMPLEMENTED("This method is not implemented!");
   }
 ```
