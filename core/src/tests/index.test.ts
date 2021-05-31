@@ -13,19 +13,44 @@ describe("HTTP Tests", () => {
   before(() => {
     const server = new MyServer();
     app = server.getApp;
-    getAllExpressRoutes(app);
+    // getAllExpressRoutes(app);
   });
 
   it("Ping all available methods and check if it returns a 200 response", async () => {
-    Object.values(HTTP_METHOD).forEach(async (key) => {
-      let dat = await assertHttpEndPoints(
-        key,
-        "/api",
-        { message: "hello!" },
-        200,
-        app
-      );
+    Object.values(HTTP_METHOD)
+      .filter((r) => HTTP_METHOD.ALL)
+      .forEach(async (key) => {
+        let dat = await assertHttpEndPoints(
+          key,
+          "/api",
+          { message: "hello!" },
+          200,
+          app
+        );
+      });
+  });
+
+  // add checks for @all decorator on /api/all
+
+  it("Check @all route is accepting all routes", function (done) {
+    ["get", "put", "post", "patch", "delete"].forEach(async () => {
+      let agent: any = request.agent;
+      try {
+        const res = await agent(app)
+          .get("/api/all")
+          .expect(200)
+          .expect("Content-Type", /json/);
+     
+        expect(res).to.have.property("body");
+        expect(res.body).to.have.property("message");
+        expect(res.body).to.have.property("method");
+        expect(res.body.method).to.have.be.equal(HTTP_METHOD.ALL);
+      } catch (err) {
+       return done(err);
+      }
     });
+
+   return done();
   });
 
   it("verify data is passed to proper arguments", async () => {

@@ -1,5 +1,5 @@
 import { HTTP_METHOD } from "../../keys";
-import { Controller, get, post, patch, del, requestBody, put } from "../../";
+import { Controller, get, post, patch, del, requestBody, put , all} from "../../";
 import { requestParams } from "../../";
 
 @Controller("/api")
@@ -27,6 +27,11 @@ export class TestController {
   @put("/")
   putSomething(@requestBody body: any) {
     return { message: "Called del on /api", method: HTTP_METHOD.PUT };
+  }
+
+  @all("/all")
+  allRoutes(@requestBody body: any) {
+    return { message: "Called all on /all", method: HTTP_METHOD.ALL };
   }
 
   @get("/params/:id/:name")
