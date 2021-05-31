@@ -8,11 +8,12 @@ Pretty express is a library that adds Typescript decorators to methods/classes a
 
 
 ## Features
-* Controllers with a base route, marked with @Controller decorator
-* @get @post @patch @del and @put decorators available for methods
-* @requestBody @requestParams @authUser as parameter decorators inside decorated methods
-* @validate  decorator for request body validation
-* @authenticate decorator for jwt authentication with roles
+* Controllers with a base route, marked with `@Controller` decorator
+* `@get` `@post` `@patch` `@del` and `@put` decorators available for methods
+* `@requestBody` `@requestParams` `@authUser` as parameter decorators inside decorated methods
+* `@validate`  decorator for request body validation
+* `@authenticate` decorator for jwt authentication with roles
+* `@middleware` decorator passing middlewares
 
 
 
@@ -144,7 +145,7 @@ server.start();
 ````typescript
   @patch("/")
   async errprFunction(req: Request, res: Response, next: NextFunction) {
-    throw new HttpError(400, "Hello Error!");
+    throw new HttpError(400, "Hello Erro!");
   }
 ````
 
