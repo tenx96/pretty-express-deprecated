@@ -86,9 +86,9 @@ server.start();
 
 |decorators|details|
 |-|-|
-|@requestBody|the request body|
-|@requestParams|the request parameters|
-|@authUser|the credentials of the authenticated user eg ``{id , iat}``|
+|`@requestBody`|the request body|
+|`@requestParams`|the request parameters|
+|`@authUser`|the credentials of the authenticated user eg ``{id , iat}``|
 |||
 
 ````typescript
@@ -130,7 +130,7 @@ server.start();
   }
 ```
 
-> To return a response with a custom status code. Simply return an object of type HttpResponse(status, object)
+> To return a response with a custom status code. Simply return an object of type `HttpResponse(status, object)`
 
 ```typescript
   @post("/")
@@ -139,13 +139,13 @@ server.start();
   }
 ```
 
-> to return an error response, just throw an error of type HttpError
+> to return an error response, just throw an error of type `HttpError`
 
 
 ````typescript
   @patch("/")
   async errprFunction(req: Request, res: Response, next: NextFunction) {
-    throw new HttpError(400, "Hello Erro!");
+    throw new HttpError(400, "Hello Error!");
   }
 ````
 
@@ -161,7 +161,8 @@ server.start();
 
 ## Request Level and Controller level middlewares
 
-#### You can pass middlewares using the @middleware decorator on controllers and fucntions
+### You can pass middlewares using the `@middleware` decorator on controllers and functions 
+<br>
 
 > define your middleware
 
@@ -172,7 +173,7 @@ function requestMiddleware (req : Request,res : Response,next : NextFunction) {
 }
 ````
 
-> use the @middleware decorator
+> use the `@middleware` decorator
 
 ````typescript
   @middleware(requestMiddleware)
@@ -182,7 +183,7 @@ function requestMiddleware (req : Request,res : Response,next : NextFunction) {
   }
 ````
 
-> you can also pass multiple middlewares like this
+> you can also pass multiple middlewares. They will be executed in order of their indexes.
 
 
 ````typescript
@@ -216,8 +217,11 @@ class UserController {
 > Note That the controller level middlewares are called first followed by the request level middlewares.
 
 
+<br>
 
 ## Request Body Validation
+
+<br>
 
 > Request body is validated using the [class-validator](https://www.npmjs.com/package/class-validator) library
 > Our library provides a @validate decorator were you can pass models created with class validator and validator options
@@ -273,19 +277,26 @@ class UserController {
 
 
 ## JWT AUTHENTICATION (Testing / Under Development)
-### Pretty express provides @authenticate decorator to protect your routes
-### The actual authenticaion logic is not implemented by the package. It only provides helpers and decorators to achieve the authentication.
-
-
-> To start, we need to create a AuthenticaionService class that inhereits ``JwtAuthenticationStrategy`` with a `@AuthStrategy` decorator <br>
+> Pretty express provides `@authenticate` decorator to protect your routes
+<br>
+<br>
+> The actual authenticaion logic is not implemented by the package. It only provides helpers and decorators to achieve the authentication.
+<br>
+<br>
+> To start, we need to create a AuthenticaionService class that inhereits ``JwtAuthenticationStrategy`` with a `@AuthStrategy` decorator
+<br>
+<br>
 >`@AuthStrategy` will take a string as an input which will be the name of our authentication strategy <br>
-
+<br>
 > In the service class we have to implement the given abstract methods:
+<br>
+<br>
  ``verifyToken`` , ``verifyCredentials``  and ``generateToken`` <br>
  ``generateToken`` returns a string token <br>
 ``verifyToken`` verifies the token string and returns the decoded data<br>
 ``verifyCredentials`` checks the data and the required role. <br>
-
+<br>
+<br>
 
 > In the example below we used [jsonwebtoken](https://www.npmjs.com/package/jsonwebtoken) to generate the tokens.
 
@@ -339,7 +350,7 @@ export class MyJwtAuthService extends JwtAuthenticationStrategy {
 
 ````
 
-### Register your service on your server
+## Register your service on your server
 
 ````typescript
 export class ApplicationServer extends Server {
