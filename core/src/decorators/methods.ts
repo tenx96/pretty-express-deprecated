@@ -96,6 +96,24 @@ export function del(path: string): MethodDecorator {
   };
 }
 
+/**
+ *
+ * @param path | path value for meta data on Method
+ * @returns Method Decorator
+ * adds two meta data on function
+ * @path sub path of url
+ * @method eg get , post , update , delete
+ */
+ export function all(path: string): MethodDecorator {
+  return (
+    target: Object,
+    key: string | symbol,
+    descriptor: PropertyDescriptor
+  ) => {
+    _addMetaDataToFunction(HTTP_METHOD.ALL, target, key, path);
+  };
+}
+
 
 /**
  *
