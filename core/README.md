@@ -139,16 +139,33 @@ server.start();
   }
 ```
 
-> to return an error response, just throw an error of type `HttpError`
+> to return an error response,  throw an error of type `HttpErrorResponse`
 
 
 ````typescript
   @patch("/")
   async errprFunction(req: Request, res: Response, next: NextFunction) {
-    throw new HttpError(400, "Hello Error!");
+    throw new HttpErrorResponse(400, "Hello Error!");
   }
 ````
 
+> You can also automatically get the status codes from static methods provided in `HttpErrorResponse` and `HttpResponse`.
+
+```typescript
+@post("/user")
+  async test() {
+    throw HttpErrorResponse.NOT_IMPLEMENTED("This method is not implemented!");
+  }
+```
+
+> Similary for HttpResponse
+
+```typescript
+@post("/")
+  async addUser(req: Request, res: Response, next: NextFunction) {
+    return HttpResponse.CREATED({data : "new data entered"})
+  }
+```
 
 
 
@@ -276,7 +293,7 @@ class UserController {
 
 
 
-## JWT AUTHENTICATION (Testing / Under Development)
+### JWT AUTHENTICATION (Testing / Under Development)
 > Pretty express provides `@authenticate` decorator to protect your routes
 <br>
 <br>
