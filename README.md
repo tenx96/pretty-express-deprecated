@@ -295,25 +295,25 @@ class UserController {
 
 ### JWT AUTHENTICATION (Testing / Under Development)
 > Pretty express provides `@authenticate` decorator to protect your routes
-<br>
-<br>
 > The actual authenticaion logic is not implemented by the package. It only provides helpers and decorators to achieve the authentication.
 <br>
-<br>
-> To start, we need to create a AuthenticaionService class that inhereits ``JwtAuthenticationStrategy`` with a `@AuthStrategy` decorator
-<br>
-<br>
+
+> To start, we need to create a AuthenticaionService class that inhereits `JwtAuthenticationStrategy` with a `@AuthStrategy` decorator
+
+
 >`@AuthStrategy` will take a string as an input which will be the name of our authentication strategy <br>
 <br>
+
 > In the service class we have to implement the given abstract methods:
 <br>
 <br>
 
- ``verifyToken`` , ``verifyCredentials``  and ``generateToken`` <br>
- ``generateToken`` returns a string token <br>
-``verifyToken`` verifies the token string and returns the decoded data<br>
-``verifyCredentials`` checks the data and the required role. <br>
-<br>
+|function|details|
+|-|-|
+|`generateToken`|returns a string token|
+| `verifyToken`| verifies the token string and returns the decoded data|
+|`verifyCredentials`| checks the data and the required role.|
+
 <br>
 
 > In the example below we used [jsonwebtoken](https://www.npmjs.com/package/jsonwebtoken) to generate the tokens.
