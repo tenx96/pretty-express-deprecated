@@ -11,11 +11,17 @@ import {
   del,
   requestParams,
   put,
+  validate,
+  authenticate,
+  authUser,
+  middleware,
+  HttpResponse,
+  HttpError,
 } from "pretty-express";
+import { UserSchema } from "./User";
 const app = express();
 
 import { MyJwtAuthService } from "./authentication.service";
-import { CreatePostRequest } from "./validator/template.request";
 
 const testService = new MyJwtAuthService();
 
@@ -30,27 +36,34 @@ class UserController {
     });
     return { token };
   }
-  
+
   @del("/")
   async de(req: Request, res: Response, next: NextFunction) {
     return { method: "delete" };
   }
-
+  @middleware(demoMiddleware)
   @put("/")
   async asdas(req: Request, res: Response, next: NextFunction) {
-    return { method: "put" };
+    return new HttpResponse(201, { message: "Updated" });
   }
 
   @patch("/")
   async asd(req: Request, res: Response, next: NextFunction) {
-    return { method: "patch" };
+    throw new HttpError(400, "Hello Erro!");
   }
 
+  @authenticate("jwt")
+  @validate(UserSchema)
   @post("/:id")
   async addUsers(
-    @requestBody data: CreatePostRequest,
+    @requestBody data: UserSchema,
+    @authUser currentUser: any,
     @requestParams params: Object
   ) {
+    console.log("body", data);
+    console.log("user", currentUser);
+    console.log("params", params);
+
     return { msg: "Recieved a body ", data };
   }
 }
@@ -78,26 +91,6 @@ export class ApplicationServer extends Server {
 function demoMiddleware(req: Request, res: Response, next: NextFunction) {
   console.log("you have entered a request level middleware");
   next();
-}
-
-function demoMiddleware2(req: Request, res: Response, next: NextFunction) {
-  console.log("you have entered a request level middleware 2222");
-  next();
-}
-
-function classMiddleware(req: Request, res: Response, next: NextFunction) {
-  console.log("you have entered a controller level middleware");
-  next();
-}
-
-function demoError(
-  err: Error,
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
-  console.log("Warning........! You entered a error middleware");
-  return res.status(500).send("You are noob!!!");
 }
 
 const server = new ApplicationServer();
