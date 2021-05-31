@@ -15,58 +15,59 @@ describe("MIDDLEWARE ORDER tests", () => {
     app = server.getApp;
   });
 
-  describe("Verify order of Check for class level and request level middlewares, required order :: `class level` --> `request level`", () => {
-    it("get /middleware is marked by request by both controller and request middleware. It should last be marked by request middleware", () => {
-      request
-        .agent(app)
-        .get("/middleware")
-        .expect("Content-Type", /json/)
-        .expect(200)
-        .end((err, res) => {
-          if (err) throw err;
+  it("get /middleware is marked by request by both controller and request middleware. It should last be marked by request middleware", function (done) {
+    request
+      .agent(app)
+      .get("/middleware")
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .then((res) => {
+        expect(res).to.have.ownProperty("body");
+        expect(res.body).to.have.ownProperty("message");
+        expect(res.body.message).to.be.equal(
+          "last changed by :request middleware"
+        );
+        done();
+      })
+      .catch((err) => {
+        done(err);
+      });
+  });
 
-          expect(res).to.have.ownProperty("body");
-          expect(res.body).to.have.ownProperty("message");
-          expect(res.body.message).to.be.equal(
-            "last changed by :request middleware"
-          );
-        });
-    });
+  it("get /middleware is marked ONLY BY controller middleware. It should last be marked by controller middleware", function (done) {
+    request
+      .agent(app)
+      .post("/middleware")
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .end((err, res) => {
+        if (err) done(err);
 
-    it("get /middleware is marked ONLY BY controller middleware. It should last be marked by controller middleware" , () => {
-        request
-        .agent(app)
-        .post("/middleware")
-        .expect("Content-Type", /json/)
-        .expect(200)
-        .end((err, res) => {
-          if (err) throw err;
+        expect(res).to.have.ownProperty("body");
+        expect(res.body).to.have.ownProperty("message");
+        expect(res.body.message).to.be.equal(
+          "last changed by :controller middleware"
+        );
 
-          expect(res).to.have.ownProperty("body");
-          expect(res.body).to.have.ownProperty("message");
-          expect(res.body.message).to.be.equal(
-            "last changed by :controller middleware"
-          );
-        });
-    })
+        done();
+      });
+  });
 
+  it("patch /middleware is marked  BY TWO request middleware. It should last be marked by request middleware2", (done) => {
+    request
+      .agent(app)
+      .patch("/middleware")
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .end((err, res) => {
+        if (err) done(err);
 
-    it("patch /middleware is marked  BY TWO request middleware. It should last be marked by request middleware2" , () => {
-        request
-        .agent(app)
-        .patch("/middleware")
-        .expect("Content-Type", /json/)
-        .expect(200)
-        .end((err, res) => {
-          if (err) throw err;
-
-          expect(res).to.have.ownProperty("body");
-          expect(res.body).to.have.ownProperty("message");
-          expect(res.body.message).to.be.equal(
-            "last changed by :request middleware2"
-          );
-        });
-    })
-
+        expect(res).to.have.ownProperty("body");
+        expect(res.body).to.have.ownProperty("message");
+        expect(res.body.message).to.be.equal(
+          "last changed by :request middleware2"
+        );
+        done();
+      });
   });
 });

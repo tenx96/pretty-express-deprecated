@@ -1,4 +1,4 @@
-import {JwtAuthenticationStrategy, AuthStrategy } from "../../";
+import { JwtAuthenticationStrategy, AuthStrategy } from "../";
 import jwt from "jsonwebtoken";
 
 const jwtKey = "Auth Key";
@@ -8,7 +8,6 @@ export interface UserCredentials {
   email: string;
   role?: string;
 }
-
 
 @AuthStrategy("jwt")
 export class MyJwtAuthService extends JwtAuthenticationStrategy {

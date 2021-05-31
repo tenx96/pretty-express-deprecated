@@ -25,33 +25,31 @@ class Creds {
 
 @Controller("/auth")
 export class AuthController {
+  constructor(private auth: MyJwtAuthService) {}
 
-    constructor(private auth : MyJwtAuthService) {}
-
-@validate(Creds)
+  @validate(Creds)
   @get("/token")
-  async getUsers(@requestBody data : Creds,) {
-
-    const {id,email,role} = data;
-    const token = await this.auth.generateToken({id,email,role});
+  async getUsers(@requestBody data: Creds) {
+    const { id, email, role } = data;
+    const token = await this.auth.generateToken({ id, email, role });
     return { token };
   }
 
   @authenticate("jwt")
   @post("/protected")
-  async protected(@requestBody data : Creds , @authUser auth : any) {
+  async protected(@requestBody data: Creds, @authUser auth: any) {
     return { message: "Authenticated ", auth };
   }
 
-  @authenticate("jwt" , {role : ["user"]})
+  @authenticate("jwt", { role: ["user"] })
   @post("/role")
-  async roleProtected(@requestBody data : Creds) {
+  async roleProtected(@requestBody data: Creds) {
     return { message: "Recieved a body ", data };
   }
 
-  @authenticate("jwt" , {role : ["user" , "admin"]})
+  @authenticate("jwt", { role: ["user", "admin"] })
   @post("/multi")
-  async multiroles(@requestBody data : Creds) {
+  async multiroles(@requestBody data: Creds) {
     return { message: "Recieved a body ", data };
   }
 }

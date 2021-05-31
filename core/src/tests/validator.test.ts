@@ -55,19 +55,17 @@ describe("VALIDATOR tests", () => {
         });
     });
 
-
     it("Request with  invalid email. Should return a status 400!", () => {
-        request
-          .agent(app)
-          .get("/validator")
-          .send({ email: "test@@gmail.com", password: "passwo3d", name: "Tenx" })
-          .expect("Content-Type", /json/)
-          .expect(400)
-          .end((err, res) => {
-            if (err) throw err;
-  
-          });
-      });
+      request
+        .agent(app)
+        .get("/validator")
+        .send({ email: "test@@gmail.com", password: "passwo3d", name: "Tenx" })
+        .expect("Content-Type", /json/)
+        .expect(400)
+        .end((err, res) => {
+          if (err) throw err;
+        });
+    });
 
     it("Request with  EXTRA property on body : name , a valid email and password. Extra data will be accepted without whitelist", () => {
       request
@@ -97,30 +95,25 @@ describe("VALIDATOR tests", () => {
     });
 
     it("Request with  EXTRA property on body : name , a valid email and password. Extra data will be removed due to whitelist", () => {
-        request
-          .agent(app)
-          .post("/validator")
-          .send({
-            email: "test@gmail.com",
-            password: "passwo3d",
-            name: "Tenx",
-            extra: "x",
-          })
-          .expect("Content-Type", /json/)
-          .expect(200)
-          .end((err, res) => {
-            if (err) throw err;
-  
-            expect(res).to.have.ownProperty("body");
-            expect(res.body).to.have.ownProperty("message");
-            expect(res.body).to.have.ownProperty("data");
-            expect(res.body.data).to.have.keys([
-              "email",
-              "password",
-              "name"
-            ]);
-          });
-      });
+      request
+        .agent(app)
+        .post("/validator")
+        .send({
+          email: "test@gmail.com",
+          password: "passwo3d",
+          name: "Tenx",
+          extra: "x",
+        })
+        .expect("Content-Type", /json/)
+        .expect(200)
+        .end((err, res) => {
+          if (err) throw err;
 
+          expect(res).to.have.ownProperty("body");
+          expect(res.body).to.have.ownProperty("message");
+          expect(res.body).to.have.ownProperty("data");
+          expect(res.body.data).to.have.keys(["email", "password", "name"]);
+        });
+    });
   });
 });

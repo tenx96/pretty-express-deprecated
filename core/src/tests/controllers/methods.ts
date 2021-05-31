@@ -1,11 +1,11 @@
 import { HTTP_METHOD } from "../../keys";
-import { Controller, get, post, patch, del, requestBody } from "../../";
+import { Controller, get, post, patch, del, requestBody, put } from "../../";
 import { requestParams } from "../../";
 
 @Controller("/api")
 export class TestController {
   @get("/")
-  getSomething(@requestBody body: any ) {
+  getSomething(@requestBody body: any) {
     return { message: "Called get on /api", method: HTTP_METHOD.GET };
   }
 
@@ -24,9 +24,18 @@ export class TestController {
     return { message: "Called del on /api", method: HTTP_METHOD.DELETE };
   }
 
+  @put("/")
+  putSomething(@requestBody body: any) {
+    return { message: "Called del on /api", method: HTTP_METHOD.PUT };
+  }
+
   @get("/params/:id/:name")
-  paramsCheck(@requestBody body: any, @requestParams params : any , ) {
-    return { message: "Called get on /api", method: HTTP_METHOD.GET ,
-  body , params};
+  paramsCheck(@requestBody body: any, @requestParams params: any) {
+    return {
+      message: "Called get on /api",
+      method: HTTP_METHOD.GET,
+      body,
+      params,
+    };
   }
 }
