@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { HttpError } from "../models/httperror";
+import { HttpErrorResponse } from "../models/httperror";
 
 export function httpErrorMiddleware(
   err: Error,
@@ -7,14 +7,22 @@ export function httpErrorMiddleware(
   res: Response,
   next: NextFunction
 ) {
-  if (err instanceof HttpError) {
-    const val = err as HttpError;
+  if (err instanceof HttpErrorResponse) {
+    const val = err as HttpErrorResponse;
+    const jsonWithData = {
+      message: val.phrase || "An error occured!",
+      error: val.message,
+      data: val.data,
+    };
+
+    const jsonNoData = {
+      message: val.phrase || "An error occured!",
+      error: val.message,
+    };
+
     return res
       .status(val.status)
-      .json({
-        message: "An error occured!",
-        error: val.message,
-      })
+      .json(val.data ? jsonWithData : jsonNoData)
       .end();
   } else {
     next(err);
