@@ -37,6 +37,40 @@
     "start": "tsc && node dist/index.js",
     "build": "tsc"
   },
-  "author": "",
-  "license": "ISC"
+
+  "keywords": [
+    "pretty-express",
+    "pretty",
+    "typescript",
+    "decorator",
+    "decorators",
+    "routes",
+    "route",
+    "router",
+    "express",
+    "express-ts",
+    "expressjs",
+    "rest",
+    "restful",
+    "simple",
+    "server",
+    "middlware",
+    "options",
+    "controller",
+    "controllers",
+    "api",
+    "validation",
+    "authentication",
+    "jwt",
+    "framework",
+    "web",
+    "service",
+    "webserver",
+    "services",
+    "back-end",
+    "node",
+    "nodejs"
+  ],
+  "author": "Mairingdao Hojai",
+  "license": "MIT"
 }
