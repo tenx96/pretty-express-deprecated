@@ -22,7 +22,7 @@
 $ npm install --save pretty-express
 $ npm install --save reflect-meta
 ````
-> **IMPORTANT** requires ``experimentalDecorators`` &  ``emitDecoratorMetadata`` set to ``true`` in the ``tsconfig.json`` file
+> **IMPORTANT** requires ``experimentalDecorators`` &  ``emitDecoratorMetadata`` set to ``true`` in the ``tsconfig.json`` file. (check [this](https://github.com/tenx96/pretty-express/blob/main/example/tsconfig.json) for reference )
 
 > also requires  ``import "reflect-metadata";'`` at the top of your entry level file (eg ``index.ts``)
 
