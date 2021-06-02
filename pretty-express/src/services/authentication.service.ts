@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction, RequestHandler } from "express";
 import { AUTH_CREDENTIAL_KEY } from "../keys";
-
+import {HttpErrorResponse} from "../models"
 export interface UserCredentials {
   email: string;
   id: string;
@@ -40,10 +40,8 @@ export abstract class JwtAuthenticationStrategy {
         const verifiedCredentials = await this.verifyCredentials(credentials , role);
         req[AUTH_CREDENTIAL_KEY] = verifiedCredentials;
         next();
-      } catch (err) {
-        return res.status(401).json({
-          message: err.message || "User Unauthorized",
-        });
+      } catch (err) { 
+            throw HttpErrorResponse.UNAUTHORIZED("User is unauthorized.")
       }
     };
   }
