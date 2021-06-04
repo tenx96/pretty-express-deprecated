@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction, RequestHandler } from "express";
 import { AUTH_CREDENTIAL_KEY } from "../keys";
-import {HttpErrorResponse} from "../models"
+import { HttpErrorResponse } from "../models";
 export interface UserCredentials {
   email: string;
   id: string;
@@ -8,12 +8,13 @@ export interface UserCredentials {
 }
 
 export abstract class JwtAuthenticationStrategy {
-  abstract  generateToken(credentials: UserCredentials | any): Promise<string>;
+  abstract generateToken(credentials: UserCredentials | any): Promise<string>;
 
   abstract verifyToken(token: string): Promise<Object>;
 
   abstract verifyCredentials(
-    credentials: UserCredentials | any , requiredRole? : string[]
+    credentials: UserCredentials | any,
+    requiredRole?: string[]
   ): Promise<Object>;
 
   extractToken(req: Request) {
@@ -32,16 +33,19 @@ export abstract class JwtAuthenticationStrategy {
     }
   }
 
-   buildMiddleware(role? : string[]): RequestHandler {
+  buildMiddleware(role?: string[]): RequestHandler {
     return async (req: any, res: Response, next: NextFunction) => {
       try {
         const token = this.extractToken(req).toString();
         const credentials = await this.verifyToken(token);
-        const verifiedCredentials = await this.verifyCredentials(credentials , role);
+        const verifiedCredentials = await this.verifyCredentials(
+          credentials,
+          role
+        );
         req[AUTH_CREDENTIAL_KEY] = verifiedCredentials;
         next();
-      } catch (err) { 
-            throw HttpErrorResponse.UNAUTHORIZED("User is unauthorized.")
+      } catch (err) {
+        next(HttpErrorResponse.UNAUTHORIZED("User is unauthorized."));
       }
     };
   }
