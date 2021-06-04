@@ -12,6 +12,7 @@ export async function executeFucntionWithDecoratedArguments(
       body: Object;
       params: Object;
       authUser: Object;
+      query : Object
     },
     handler: { request: Request; response: Response; next: NextFunction }
   ) : Promise<any>{
@@ -48,6 +49,10 @@ export async function executeFucntionWithDecoratedArguments(
           obj = data.body;
         } else if (key == "requestParams") {
           obj = data.params;
+        }
+          else if (key == "requestQuery") {
+            obj = data.query
+          
         } else {
           // authUser
           obj = data.authUser;
