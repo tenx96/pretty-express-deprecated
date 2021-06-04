@@ -10,7 +10,7 @@
 ## Features
 * Controllers with a base route, marked with `@Controller` decorator
 * `@get` `@post` `@patch` `@del` `@put` and `@all` decorators available for methods
-* `@requestBody` `@requestParams` `@authUser` as parameter decorators inside decorated methods
+* `@requestBody` `@requestParams` `@authUser` and `@requestQuery` as parameter decorators inside decorated methods
 * `@validate`  decorator for request body validation
 * `@authenticate` decorator for jwt authentication with roles
 * `@middleware` decorator passing middlewares
@@ -89,6 +89,7 @@ server.start();
 |`@requestBody`|the request body|
 |`@requestParams`|the request parameters|
 |`@authUser`|the credentials of the authenticated user eg ``{id , iat}``|
+|`@requestQuery`| the request query object|
 |||
 
 ````typescript
