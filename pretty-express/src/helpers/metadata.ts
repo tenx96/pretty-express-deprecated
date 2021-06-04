@@ -169,6 +169,12 @@ export function getDataFromAllDecoratedFunction(
           prototype,
           propertyKey
         );
+
+        const requestQueryArgIndex = Reflect.getOwnMetadata(
+          PARAMETER_META_KEYS.requestQuery,
+          prototype,
+          propertyKey
+        );
   
         // check if httpMethods exists and is available for use in our implementation
   
@@ -193,6 +199,7 @@ export function getDataFromAllDecoratedFunction(
               authUser: authUserArgIndex,
               requestBody: requestBodyArgIndex,
               requestParams: requestParamsArgIndex,
+              requestQuery : requestQueryArgIndex,
             },
           });
   

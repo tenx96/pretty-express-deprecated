@@ -38,6 +38,7 @@ export interface IRouterData {
     requestBody: number;
     requestParams: number;
     authUser: number;
+    requestQuery: number;
   }
   
   export interface IAuthenticationData {

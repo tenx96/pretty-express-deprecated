@@ -37,6 +37,7 @@ export const VALIDATOR_META_KEYS = {
 export const PARAMETER_META_KEYS = {
   requestBody : Symbol.for("request body"),
   requestParams : Symbol.for("request params"),
+  requestQuery : Symbol.for("request query"),
   authUser : Symbol.for("auth user"),
 }
 

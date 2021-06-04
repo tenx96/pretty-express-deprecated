@@ -163,13 +163,13 @@ function buildRouterForController(
         ...fdata.middlewares,
         async (request: any, response: Response, next: NextFunction) => {
           try {
-            const { body, params } = request;
+            const { body, params, query } = request;
             const authUser = request[AUTH_CREDENTIAL_KEY];
 
             const returnedVal = await executeFucntionWithDecoratedArguments(
               controller,
               fdata.propertyKey,
-              { arg: fdata.parameterIndex, body, params, authUser },
+              { arg: fdata.parameterIndex, body, params, authUser, query},
               { request, response, next }
             );
             handleFunctionReturnValue(request, response, next, returnedVal);

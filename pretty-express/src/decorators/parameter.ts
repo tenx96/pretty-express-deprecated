@@ -13,3 +13,7 @@ export function requestBody(target: Object, propertyKey: string | symbol, parame
 export function authUser(target: Object, propertyKey: string | symbol, parameterIndex: number) {
     Reflect.defineMetadata(PARAMETER_META_KEYS.authUser , parameterIndex , target , propertyKey)
 }
+
+export function requestQuery(target: Object, propertyKey: string | symbol, parameterIndex: number) {
+    Reflect.defineMetadata(PARAMETER_META_KEYS.requestQuery , parameterIndex , target , propertyKey)
+}
