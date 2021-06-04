@@ -4,7 +4,7 @@
 
 ## What is it
 
-[Pretty express](https://www.npmjs.com/package/pretty-express) is a library that adds Typescript decorators to methods/classes and parameters to simplify the way we write express code. It also includes jwt authenticaion and validation decorator built using [class-decorator](https://www.npmjs.com/package/class-validator)
+[Pretty express](https://www.npmjs.com/package/pretty-express) is a library that adds Typescript decorators to methods/classes and parameters to simplify the way we write express code. It also includes jwt authenticaion and validation decorator built using [class-validator](https://www.npmjs.com/package/class-validator)
 
 
 ## Features
