@@ -67,4 +67,23 @@ describe("HTTP Tests", () => {
     expect(res.body.body).to.have.keys(["message", "name"]);
     expect(res.body.params).to.have.keys(["id", "name"]);
   });
+
+
+
+
+  it("verify query data is evaluated", async () => {
+    const res = await request
+      .agent(app)
+      .get("/api/query?name=tenx&job=sde")
+      .send({ message: "something", name: "test" })
+      .expect("Content-Type", /json/)
+      .expect(200);
+    expect(res).to.have.ownProperty("body");
+    expect(res.body).to.have.ownProperty("message");
+    expect(res.body).to.have.ownProperty("query");
+    expect(res.body.query).to.have.keys(["name", "job"]);
+    expect(res.body.query.name).to.be.equal("tenx")
+    expect(res.body.query.job).to.be.equal("sde")
+   
+  });
 });

@@ -1,6 +1,7 @@
 import { HTTP_METHOD } from "../../keys";
 import { Controller, get, post, patch, del, requestBody, put , all} from "../../";
-import { requestParams } from "../../";
+import { requestParams , requestQuery} from "../../";
+
 
 @Controller("/api")
 export class TestController {
@@ -41,6 +42,15 @@ export class TestController {
       method: HTTP_METHOD.GET,
       body,
       params,
+    };
+  }
+
+  @get("/query")
+  queryChecks(@requestQuery query : any) {
+    return {
+      message: "Called get on /api",
+      method: HTTP_METHOD.GET,
+      query
     };
   }
 }
