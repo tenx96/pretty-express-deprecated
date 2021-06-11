@@ -22,14 +22,14 @@ export class MyServer extends Server {
       next();
     });
 
-    let authService = new MyJwtAuthService();
-    this.addAuthenticationStrategies([authService]);
-    this.addControllersToServer([
-      new AuthController(authService),
-      new TestController(),
-      new MidController(),
-      new ValidateController(),
-    ]);
+    // let authService = new MyJwtAuthService();
+    // this.addAuthenticationStrategies([authService]);
+    // this.addControllersToServer([
+    //   new AuthController(authService),
+    //   new TestController(),
+    //   new MidController(),
+    //   new ValidateController(),
+    // ]);
   }
 
   start() {

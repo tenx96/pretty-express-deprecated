@@ -6,12 +6,17 @@ import { expect } from "chai";
 import Sinon from "sinon";
 import { assertHttpEndPoints } from "./helper";
 import { HTTP_METHOD } from "../keys";
+import { MyJwtAuthService } from "./auth.serv";
+import { AuthController } from "./controllers/auth";
 
 let spy: Sinon.SinonSpy;
 let app: Express;
 describe("AUTHENTICATION tests", () => {
   before(() => {
     const server = new MyServer();
+    const auth = new MyJwtAuthService()
+    server.addAuthenticationStrategies([auth])
+    server.addControllersToServer([new AuthController(auth)]);
     app = server.getApp;
   });
 

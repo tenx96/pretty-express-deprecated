@@ -6,12 +6,14 @@ import { expect } from "chai";
 import Sinon from "sinon";
 import { assertHttpEndPoints } from "./helper";
 import { HTTP_METHOD } from "../keys";
+import { ValidateController } from "./controllers";
 
 let spy: Sinon.SinonSpy;
 let app: Express;
 describe("VALIDATOR tests", () => {
   before(() => {
     const server = new MyServer();
+    server.addControllersToServer([new ValidateController()])
     app = server.getApp;
   });
 

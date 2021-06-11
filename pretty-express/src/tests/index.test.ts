@@ -6,12 +6,14 @@ import { expect } from "chai";
 import Sinon from "sinon";
 import { assertHttpEndPoints, getAllExpressRoutes } from "./helper";
 import { HTTP_METHOD } from "../keys";
+import { TestController } from "./controllers";
 
 let spy: Sinon.SinonSpy;
 let app: Express;
 describe("HTTP Tests", () => {
   before(() => {
     const server = new MyServer();
+    server.addControllersToServer([new TestController()])
     app = server.getApp;
     // getAllExpressRoutes(app);
   });

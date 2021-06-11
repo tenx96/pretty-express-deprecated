@@ -6,12 +6,14 @@ import { expect } from "chai";
 import Sinon from "sinon";
 import { assertHttpEndPoints } from "./helper";
 import { HTTP_METHOD } from "../keys";
+import { MidController } from "./controllers";
 
 let spy: Sinon.SinonSpy;
 let app: Express;
 describe("MIDDLEWARE ORDER tests", () => {
   before(() => {
     const server = new MyServer();
+    server.addControllersToServer([new MidController()])
     app = server.getApp;
   });
 
