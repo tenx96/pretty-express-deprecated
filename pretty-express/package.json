@@ -30,7 +30,8 @@
   "scripts": {
     "test": "mocha -r ts-node/register src/tests/**/*.test.ts",
     "start": "tsc && node dist/index.js",
-    "build": "tsc"
+    "build": "tsc",
+    "dev2"  : "ts-node misc-test/test.ts"
   },
   "repository": {
     "type": "git",
