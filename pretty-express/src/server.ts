@@ -172,6 +172,8 @@ function buildRouterForController(
               { arg: fdata.parameterIndex, body, params, authUser, query},
               { request, response, next }
             );
+
+            // handle returned value based on type of returned object, : obj or HttpResponse or HttpErrorResponse
             handleFunctionReturnValue(request, response, next, returnedVal);
           } catch (err) {
             next(err);
