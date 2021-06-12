@@ -1,6 +1,6 @@
 {
   "name": "pretty-express",
-  "version": "1.0.28",
+  "version": "1.0.29",
   "description": "Decorators for express RequestHandlers",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -29,6 +29,7 @@
   },
   "scripts": {
     "test": "mocha -r ts-node/register src/tests/**/*.test.ts",
+    "unit-test": "mocha -r ts-node/register src/**/*.spec.ts",
     "start": "tsc && node dist/index.js",
     "build": "tsc",
     "dev2": "ts-node misc-test/test.ts"

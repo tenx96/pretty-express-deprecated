@@ -1,6 +1,6 @@
 import { plainToClass } from "class-transformer";
 import { ValidationError, ValidatorOptions, Validator } from "class-validator";
-import { RequestHandler } from "express";
+import { json, RequestHandler } from "express";
 import { Request, Response, NextFunction } from "express";
 import { ValidationService, Constructor } from "./validation.interface";
 export class ServerValidationService implements ValidationService {
@@ -18,8 +18,12 @@ export class ServerValidationService implements ValidationService {
 
     return (req, res, next) => {
       let input: any = plainToClass(type, req.body);
+
+      // set forbid unknown as default
       if (!options) {
-        options = {};
+        options = {
+          forbidUnknownValues: true,
+        };
       }
 
       let errors = validator.validateSync(input, options);
@@ -52,6 +56,36 @@ export class ServerValidationService implements ValidationService {
       res.status(400).json({ errors: err }).end();
     } else {
       next(err);
+    }
+  }
+
+  validateResponseObject(
+    type: Constructor<any>,
+    object: Object,
+    options?: ValidatorOptions,
+    onError?: (err: ValidationError[]) => void
+  ) {
+    // set whitelist true to remove extra props
+    if (!options) {
+      options = { whitelist: true };
+    }
+
+    let validator = new Validator();
+
+    let input: any = plainToClass(type, object, options);
+
+    let errors = validator.validateSync(input, options);
+
+    if (errors.length > 0) {
+      if (onError) {
+        onError(errors);
+      } else {
+
+        const err_msg = `Error validating given object , ${JSON.stringify(errors)}`
+        throw new Error(err_msg);
+      }
+    } else {
+      return input;
     }
   }
 }

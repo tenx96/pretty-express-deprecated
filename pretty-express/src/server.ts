@@ -1,5 +1,11 @@
 import "reflect-metadata";
-import express,{ Express, NextFunction, Request, Response, Router } from "express";
+import express, {
+  Express,
+  NextFunction,
+  Request,
+  Response,
+  Router,
+} from "express";
 import { AUTH_CREDENTIAL_KEY } from "./keys";
 import { JwtAuthenticationStrategy } from "./services/authentication.service";
 import { ValidationService } from "./services/validation.interface";
@@ -25,7 +31,7 @@ export class Server {
   private validationService: ValidationService;
 
   constructor(protected _app: Express) {
-    this.setupParser()
+    this.setupParser();
     this.authStrategies = new Map();
     this.validationService = new ServerValidationService();
   }
@@ -33,11 +39,10 @@ export class Server {
   /**
    * set up body-parsers
    */
-  public setupParser(){
-    this._app.use(express.json())
-    this._app.use(express.urlencoded({extended : true}))
+  public setupParser() {
+    this._app.use(express.json());
+    this._app.use(express.urlencoded({ extended: true }));
   }
-
 
   /**
    *
@@ -127,7 +132,10 @@ function buildRouterForController(
     }
 
     // attach controller level validator
-    if (controllerMetaData.validationData && controllerMetaData.validationData.schema) {
+    if (
+      controllerMetaData.validationData &&
+      controllerMetaData.validationData.schema
+    ) {
       const { schema, options } = controllerMetaData.validationData;
       router.use(validationService.validationMiddleware(schema, options));
     }
@@ -151,8 +159,6 @@ function buildRouterForController(
       if (fdata.validationData && fdata.validationData.schema) {
         const { schema, options } = fdata.validationData;
 
-       
-
         fdata.middlewares.push(
           validationService.validationMiddleware(schema, options)
         );
@@ -169,12 +175,20 @@ function buildRouterForController(
             const returnedVal = await executeFucntionWithDecoratedArguments(
               controller,
               fdata.propertyKey,
-              { arg: fdata.parameterIndex, body, params, authUser, query},
+              { arg: fdata.parameterIndex, body, params, authUser, query },
               { request, response, next }
             );
 
             // handle returned value based on type of returned object, : obj or HttpResponse or HttpErrorResponse
-            handleFunctionReturnValue(request, response, next, returnedVal);
+            // also checks if Response Validator is present and check/validate returned value
+            handleFunctionReturnValue(
+              request,
+              response,
+              next,
+              returnedVal,
+              fdata,
+              validationService
+            );
           } catch (err) {
             next(err);
           }
@@ -211,12 +225,36 @@ function handleFunctionReturnValue(
   req: Request,
   res: Response,
   next: NextFunction,
-  returnedValue: Object | HttpResponse
+  returnedValue: Object | HttpResponse,
+  funcData: IFunctionMetaData,
+  validationService: ValidationService
 ): void {
+  let data: Object;
+
+  if (returnedValue instanceof HttpResponse) {
+    data = (returnedValue as HttpResponse).json;
+  } else {
+    data = returnedValue;
+  }
+
+  if (
+    funcData &&
+    funcData.resValidationData &&
+    funcData.resValidationData.schema
+  ) {
+    const { schema, options, onError } = funcData.resValidationData;
+    data = validationService.validateResponseObject(
+      schema,
+      data,
+      options,
+      onError
+    );
+  }
+
   if (returnedValue instanceof HttpResponse) {
     const val = returnedValue as HttpResponse;
-    res.status(val.status).json(val.json).end();
+    res.status(val.status).json(data).end();
   } else {
-    res.status(200).json(returnedValue).end();
+    res.status(200).json(data).end();
   }
 }

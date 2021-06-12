@@ -4,7 +4,7 @@ export const HTTP_METHOD = {
   PATCH: "patch",
   DELETE: "delete",
   PUT: "put",
-  ALL : "all"
+  ALL: "all",
 };
 
 export const FUNCTION_META_KEYS = {
@@ -25,20 +25,22 @@ export const MIDDLEWARE_META_KEYS = {
 export const AUTH_META_KEYS = {
   strategy: Symbol.for("strategy"),
   role: Symbol.for("role"),
-  authService : Symbol.for("auth service")
+  authService: Symbol.for("auth service"),
 };
 
-
 export const VALIDATOR_META_KEYS = {
-  schema : Symbol.for("Validation Schema"),
-  options : Symbol.for("Options")
-}
+  schema: Symbol.for("Validation Schema"),
+  options: Symbol.for("Options"),
+  resSchema: Symbol.for("Response Schema"),
+  resOptions: Symbol.for("Response Options"),
+  resOnError: Symbol.for("Response OnError"),
+};
 
 export const PARAMETER_META_KEYS = {
-  requestBody : Symbol.for("request body"),
-  requestParams : Symbol.for("request params"),
-  requestQuery : Symbol.for("request query"),
-  authUser : Symbol.for("auth user"),
-}
+  requestBody: Symbol.for("request body"),
+  requestParams: Symbol.for("request params"),
+  requestQuery: Symbol.for("request query"),
+  authUser: Symbol.for("auth user"),
+};
 
-export const AUTH_CREDENTIAL_KEY = "currentUser"
+export const AUTH_CREDENTIAL_KEY = "currentUser";

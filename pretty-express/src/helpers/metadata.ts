@@ -150,6 +150,26 @@ export function getDataFromAllDecoratedFunction(
           prototype,
           propertyKey
         );
+
+
+        const resValidationSchema = Reflect.getOwnMetadata(
+          VALIDATOR_META_KEYS.resSchema,
+          prototype,
+          propertyKey
+        );
+  
+        const resValidationOptions = Reflect.getOwnMetadata(
+          VALIDATOR_META_KEYS.resOptions,
+          prototype,
+          propertyKey
+        );
+
+
+        const resValidationOnError = Reflect.getOwnMetadata(
+          VALIDATOR_META_KEYS.resOnError,
+          prototype,
+          propertyKey
+        );
   
         // check for parameter indexes
         const requestBodyArgIndex = Reflect.getOwnMetadata(
@@ -194,6 +214,11 @@ export function getDataFromAllDecoratedFunction(
             validationData: {
               schema: validationSchema,
               options: validationOptions,
+            },
+            resValidationData : {
+              schema : resValidationSchema,
+              options: resValidationOptions,
+              onError : resValidationOnError
             },
             parameterIndex: {
               authUser: authUserArgIndex,
