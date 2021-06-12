@@ -35,7 +35,7 @@ export class DemoResponseSchema {
 
 @Controller("/validator")
 export class ValidateController {
-  @validate(CreatePostRequest, {})
+  @validate(CreatePostRequest)
   @get("/")
   validateWIthSchema(@requestBody data: any) {
     return { message: "received data", data };

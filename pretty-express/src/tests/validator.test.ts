@@ -13,7 +13,7 @@ let app: Express;
 describe("VALIDATOR tests", () => {
   before(() => {
     const server = new MyServer();
-    server.addControllersToServer([new ValidateController()])
+    server.addControllersToServer([new ValidateController()]);
     app = server.getApp;
   });
 
@@ -69,7 +69,7 @@ describe("VALIDATOR tests", () => {
         });
     });
 
-    it("Request with  EXTRA property on body : name , a valid email and password. Extra data will be accepted without whitelist", () => {
+    it("Request with  EXTRA property on body Should throw error", (done) => {
       request
         .agent(app)
         .get("/validator")
@@ -82,17 +82,11 @@ describe("VALIDATOR tests", () => {
         .expect("Content-Type", /json/)
         .expect(200)
         .end((err, res) => {
-          if (err) throw err;
+          if (err) return done();
 
-          expect(res).to.have.ownProperty("body");
-          expect(res.body).to.have.ownProperty("message");
-          expect(res.body).to.have.ownProperty("data");
-          expect(res.body.data).to.have.keys([
-            "email",
-            "password",
-            "name",
-            "extra",
-          ]);
+          done(
+            new Error("Test Should Fail. Extra property should not be valid")
+          );
         });
     });
 
@@ -115,12 +109,12 @@ describe("VALIDATOR tests", () => {
           expect(res.body).to.have.ownProperty("message");
           expect(res.body).to.have.ownProperty("data");
           expect(res.body.data).to.have.keys(["email", "password", "name"]);
+          expect(res.body.data).to.not.have.keys(["extra"]);
         });
     });
   });
 
-
-  describe("Response Validation Tests" , () => {
+  describe("Response Validation Tests", () => {
     it("function returns a valid object of proper type. should pass with 200 with prop : name,email", (done) => {
       request
         .agent(app)
@@ -130,11 +124,10 @@ describe("VALIDATOR tests", () => {
         .end((err, res) => {
           if (err) throw done(err);
           expect(res).to.have.ownProperty("body");
-          expect(res.body).to.have.keys(["name" , "email"]);
-          done()
+          expect(res.body).to.have.keys(["name", "email"]);
+          done();
         });
     });
-
 
     it("function returns a  object of proper type but with extra property. should pass with 200 with prop `extra1` & `extra2` removed from body", (done) => {
       request
@@ -145,12 +138,11 @@ describe("VALIDATOR tests", () => {
         .end((err, res) => {
           if (err) throw done(err);
           expect(res).to.have.ownProperty("body");
-          expect(res.body).to.have.keys(["name" , "email"]);
-          expect(res.body).to.not.have.keys(["extra1" , "extra2"]);
-          done()
+          expect(res.body).to.have.keys(["name", "email"]);
+          expect(res.body).to.not.have.keys(["extra1", "extra2"]);
+          done();
         });
     });
-
 
     it("function returns a  invalid object. Should throw error", (done) => {
       request
@@ -160,11 +152,10 @@ describe("VALIDATOR tests", () => {
         .expect(200)
         .end((err, res) => {
           if (err) return done();
-  
-          done(new Error("Test should fail. But Passed!"))
+
+          done(new Error("Test should fail. But Passed!"));
         });
     });
-
 
     it("An optional prop is passed. prop `address` . It should be present in body", (done) => {
       request
@@ -175,15 +166,13 @@ describe("VALIDATOR tests", () => {
         .end((err, res) => {
           if (err) throw done(err);
           expect(res).to.have.ownProperty("body");
-          expect(res.body).to.have.keys(["name" , "email" , "address"]);
-          done()
+          expect(res.body).to.have.keys(["name", "email", "address"]);
+          done();
         });
     });
+  });
 
-  })
-
-
-  describe("Response Validation Tests returned as HttpResponse" , () => {
+  describe("Response Validation Tests returned as HttpResponse", () => {
     it("function returns a valid object of proper type. should pass with 200 with prop : name,email", (done) => {
       request
         .agent(app)
@@ -193,11 +182,10 @@ describe("VALIDATOR tests", () => {
         .end((err, res) => {
           if (err) throw done(err);
           expect(res).to.have.ownProperty("body");
-          expect(res.body).to.have.keys(["name" , "email"]);
-          done()
+          expect(res.body).to.have.keys(["name", "email"]);
+          done();
         });
     });
-
 
     it("function returns a  object of proper type but with extra property. should pass with 200 with prop `extra1` & `extra2` removed from body", (done) => {
       request
@@ -208,12 +196,11 @@ describe("VALIDATOR tests", () => {
         .end((err, res) => {
           if (err) throw done(err);
           expect(res).to.have.ownProperty("body");
-          expect(res.body).to.have.keys(["name" , "email"]);
-          expect(res.body).to.not.have.keys(["extra1" , "extra2"]);
-          done()
+          expect(res.body).to.have.keys(["name", "email"]);
+          expect(res.body).to.not.have.keys(["extra1", "extra2"]);
+          done();
         });
     });
-
 
     it("function returns a  invalid object. Should throw error", (done) => {
       request
@@ -223,11 +210,10 @@ describe("VALIDATOR tests", () => {
         .expect(200)
         .end((err, res) => {
           if (err) return done();
-  
-          done(new Error("Test should fail. But Passed!"))
+
+          done(new Error("Test should fail. But Passed!"));
         });
     });
-
 
     it("An optional prop is passed. prop `address` . It should be present in body", (done) => {
       request
@@ -238,11 +224,9 @@ describe("VALIDATOR tests", () => {
         .end((err, res) => {
           if (err) throw done(err);
           expect(res).to.have.ownProperty("body");
-          expect(res.body).to.have.keys(["name" , "email" , "address"]);
-          done()
+          expect(res.body).to.have.keys(["name", "email", "address"]);
+          done();
         });
     });
-
-  })
-
+  });
 });

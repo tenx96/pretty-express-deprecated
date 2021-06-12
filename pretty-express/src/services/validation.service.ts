@@ -22,6 +22,8 @@ export class ServerValidationService implements ValidationService {
       // set forbid unknown as default
       if (!options) {
         options = {
+          whitelist: true,
+          forbidNonWhitelisted: true,
           forbidUnknownValues: true,
         };
       }
@@ -80,8 +82,9 @@ export class ServerValidationService implements ValidationService {
       if (onError) {
         onError(errors);
       } else {
-
-        const err_msg = `Error validating given object , ${JSON.stringify(errors)}`
+        const err_msg = `Error validating given object , ${JSON.stringify(
+          errors
+        )}`;
         throw new Error(err_msg);
       }
     } else {
