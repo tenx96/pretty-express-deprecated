@@ -31,18 +31,11 @@ export class Server {
   private validationService: ValidationService;
 
   constructor(protected _app: Express) {
-    this.setupParser();
     this.authStrategies = new Map();
     this.validationService = new ServerValidationService();
   }
 
-  /**
-   * set up body-parsers
-   */
-  public setupParser() {
-    this._app.use(express.json());
-    this._app.use(express.urlencoded({ extended: true }));
-  }
+
 
   /**
    *
