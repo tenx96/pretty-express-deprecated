@@ -1,9 +1,11 @@
 import { ValidatorOptions, ValidationError } from "class-validator";
-import { Response, NextFunction, Request, RequestHandler } from "express";
+import { Response, NextFunction, Request, RequestHandler, ErrorRequestHandler } from "express";
+import { ValidationErrorHandler } from "../interfaces";
 
 export type Constructor<T> = { new (): T };
 
 export interface ValidationService {
+
   /**
    *
    * @param type class decorated with package :class-validator
@@ -23,11 +25,8 @@ export interface ValidationService {
    * error handler for validation
    */
   validationErrorHandler(
-    err: Error,
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): void;
+    onError  : ValidationErrorHandler
+  ): ErrorRequestHandler;
 
   validateResponseObject(
     type: Constructor<any>,

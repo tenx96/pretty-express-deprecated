@@ -237,6 +237,8 @@ class UserController {
 
 <br>
 
+
+# Request and Response Validation
 ## Request Body Validation
 
 <br>
@@ -275,6 +277,14 @@ class UserController {
 
 > It is also possible to use @validate at the controller level
 
+> By default the validator options of `@validate` is set as 
+`{
+          whitelist: true,
+          forbidNonWhitelisted: true,
+          forbidUnknownValues: true,
+        }` <br>
+        So it will not allow any unknown , non specified properties on the request body , This can be changed by passing an option parameter as shown in example above
+
 ````typescript
 @validate(UserCredentials)
 @Controller("/api/users")
@@ -291,6 +301,39 @@ class UserController {
   }
 }
 ````
+
+
+## Response Validation and Object Cleaning
+
+> As mentioned in the response section. The returned value of a decorated function sent back as response with a status 200. Or we can send a response by returning an object of type `HttpResponse`
+
+> `@validateResponse` provides the functionality to validate/clean the objects returned as a response. The main purpose of this decorator is the removal of unspecified properties on the response object.
+
+> Any error thrown by this validator will not be caught on the middleware, as it is a server error.
+
+> By default the ValidatorOptions is set to `{whitelist : true}` . Thus it strips the object of any unspecified props. Although not recommended, this can be changed by manually passing the `options` as a second argument of `@validateResponse` as shown in 2nd example
+
+```typescript
+ @validateResponse(DemoResponseSchema)
+  @get("/validate1")
+  async responseValidationDemo1(@requestBody data: any) {
+    return { name: "tenx", email: "tenx@gmail.com" };
+  }
+```
+
+
+````typescript
+ @validateResponse(DemoResponseSchema , {whitelist : false})
+  @get("/validate2")
+  async responseValidationDemo5(@requestBody data: any) {
+    const user = { name: "tenx", email: "tenx@gmail.com" };
+
+    return HttpResponse.OK(user);
+  }
+````
+
+
+
 
 
 

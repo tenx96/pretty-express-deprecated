@@ -1,11 +1,12 @@
 import { RequestHandler } from "express";
-import { IAuthenticationData } from "../interfaces";
+import { AuthenticationErrorHandler, IAuthenticationData } from "../interfaces";
 import { JwtAuthenticationStrategy } from "../services";
 
 
 export function getAuthenticationMiddleware(
     authData: IAuthenticationData,
-    authStrategies: Map<string, JwtAuthenticationStrategy>
+    authStrategies: Map<string, JwtAuthenticationStrategy>,
+    onError: AuthenticationErrorHandler
   )  : RequestHandler {
     if (authData && authData.strategy) {
       // check if auth strategy is registered at server level
@@ -17,7 +18,7 @@ export function getAuthenticationMiddleware(
         // strategy exists register middleware
         const authController = authStrategies.get(authData.strategy);
   
-        return authController.buildMiddleware(authData.role || []);
+        return authController.buildAuthMiddleware(authData.role || [] , onError);
       }
     } else {
       // no auth strategy

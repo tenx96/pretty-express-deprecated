@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction, RequestHandler } from "express";
+import { AuthenticationErrorHandler } from "../interfaces";
 import { AUTH_CREDENTIAL_KEY } from "../keys";
 import { HttpErrorResponse } from "../models";
 export interface UserCredentials {
@@ -33,7 +34,10 @@ export abstract class JwtAuthenticationStrategy {
     }
   }
 
-  buildMiddleware(role?: string[]): RequestHandler {
+  buildAuthMiddleware(
+    role?: string[],
+    onError?: AuthenticationErrorHandler
+  ): RequestHandler {
     return async (req: any, res: Response, next: NextFunction) => {
       try {
         const token = this.extractToken(req).toString();
@@ -45,7 +49,11 @@ export abstract class JwtAuthenticationStrategy {
         req[AUTH_CREDENTIAL_KEY] = verifiedCredentials;
         next();
       } catch (err) {
-        next(HttpErrorResponse.UNAUTHORIZED("User is unauthorized."));
+        if (onError) {
+          return onError(err, req, res, next);
+        } else {
+          next(HttpErrorResponse.UNAUTHORIZED("User is unauthorized."));
+        }
       }
     };
   }

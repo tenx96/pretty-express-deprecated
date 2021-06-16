@@ -1,6 +1,6 @@
 import { ValidationError, ValidatorOptions } from "class-validator";
 import { Router } from "express";
-
+export* from "./error-handlers"
 export interface IRouterData {
   baseUrl: string;
   router: Router;

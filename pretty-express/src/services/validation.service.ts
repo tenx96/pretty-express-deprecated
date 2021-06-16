@@ -2,6 +2,7 @@ import { plainToClass } from "class-transformer";
 import { ValidationError, ValidatorOptions, Validator } from "class-validator";
 import { json, RequestHandler } from "express";
 import { Request, Response, NextFunction } from "express";
+import { ValidationErrorHandler } from "../interfaces";
 import { ValidationService, Constructor } from "./validation.interface";
 export class ServerValidationService implements ValidationService {
   /**
@@ -48,25 +49,25 @@ export class ServerValidationService implements ValidationService {
    * error handler for validation
    */
 
-  validationErrorHandler(
-    err: Error,
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) {
-    if (err instanceof Array && err[0] instanceof ValidationError) {
-      res.status(400).json({ errors: err }).end();
-    } else {
-      next(err);
-    }
+  validationErrorHandler(onError: ValidationErrorHandler) {
+    return (err: Error, req: Request, res: Response, next: NextFunction) => {
+      if (err instanceof Array && err[0] instanceof ValidationError) {
+        if (onError) {
+          onError(err, req, res, next);
+        } else {
+          res.status(400).json({ errors: err }).end();
+        }
+      } else {
+        next(err);
+      }
+    };
   }
 
   validateResponseObject(
     type: Constructor<any>,
     object: Object,
-    options?: ValidatorOptions,
-    onError?: (err: ValidationError[]) => void
-  ) {
+    options?: ValidatorOptions
+  ): any | ValidationError[] {
     // set whitelist true to remove extra props
     if (!options) {
       options = { whitelist: true };
@@ -78,15 +79,8 @@ export class ServerValidationService implements ValidationService {
 
     let errors = validator.validateSync(input, options);
 
-    if (errors.length > 0) {
-      if (onError) {
-        onError(errors);
-      } else {
-        const err_msg = `Error validating given object , ${JSON.stringify(
-          errors
-        )}`;
-        throw new Error(err_msg);
-      }
+    if (errors instanceof Array && errors[0] instanceof ValidationError) {
+      return errors;
     } else {
       return input;
     }
