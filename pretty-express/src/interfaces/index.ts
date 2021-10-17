@@ -1,6 +1,8 @@
 import { ValidationError, ValidatorOptions } from "class-validator";
 import { Router } from "express";
 export* from "./error-handlers"
+import {ClassTransformOptions , ClassConstructor} from "class-transformer"
+
 export interface IRouterData {
   baseUrl: string;
   router: Router;
@@ -27,7 +29,7 @@ export interface IFunctionMetaData {
   errorMiddlewares?: Function[];
   authData?: IAuthenticationData;
   validationData?: IValidationData;
-  resValidationData?: IResponseValidationData;
+  resTransformAndValidationData?: ITransformResponseData;
   parameterIndex: IParameterDetails;
 }
 
@@ -48,12 +50,16 @@ export interface IAuthenticationData {
 }
 
 export interface IValidationData {
-  schema: any;
+  schema:  ClassConstructor<any>;
   options?: ValidatorOptions;
 }
 
-export interface IResponseValidationData {
-  schema: any;
-  options?: ValidatorOptions;
-  onError?: (err: ValidationError[]) => void;
+export interface ITransformResponseData {
+  schema:  ClassConstructor<any>;
+  validate?: boolean;
+  validatorOptions?: ValidatorOptions;
+  transformOptions? : ClassTransformOptions
 }
+
+
+

@@ -8,8 +8,10 @@ import {
   ValidateNested,
   IsObject,
 } from "class-validator";
+
+import { Exclude, Expose } from "class-transformer";
 import { Type } from "class-transformer";
-import {ServerValidationService} from "./validation.service"
+import { ServerValidationService } from "./validation.service";
 import { expect } from "chai";
 
 class NestedObject {
@@ -27,6 +29,7 @@ class DemoValidationSchema {
 
   @IsString()
   @IsEmail()
+  @Exclude()
   email: string;
 
   @IsString()
@@ -39,18 +42,13 @@ class DemoValidationSchema {
   optional: NestedObject;
 }
 
-
-
-let validationService : ServerValidationService;
+let validationService: ServerValidationService;
 
 describe("Test Plain Object validation helper", () => {
-
-    before((done) => {
-        validationService = new ServerValidationService();
-        done()
-
-    })
-
+  before((done) => {
+    validationService = new ServerValidationService();
+    done();
+  });
 
   it("Validate a valid object without optional parameter. Should pass", (done) => {
     const data = {
@@ -60,7 +58,10 @@ describe("Test Plain Object validation helper", () => {
     };
 
     try {
-      const validData = validationService.validateResponseObject(DemoValidationSchema, data);
+      const validData = validationService.validateResponseObject(
+        DemoValidationSchema,
+        data
+      );
       expect(validData).to.have.keys(["name", "email", "password"]);
       done();
     } catch (err) {
@@ -77,7 +78,10 @@ describe("Test Plain Object validation helper", () => {
     };
 
     try {
-      const validData = validationService.validateResponseObject(DemoValidationSchema, data);
+      const validData = validationService.validateResponseObject(
+        DemoValidationSchema,
+        data
+      );
       expect(validData).to.have.keys(["name", "email", "password"]);
       expect(validData).to.not.have.keys(["extra1", "extra2"]);
       done();
@@ -96,7 +100,12 @@ describe("Test Plain Object validation helper", () => {
     };
 
     try {
-      const validData = validationService.validateResponseObject(DemoValidationSchema, data);
+      const validData = validationService.validateResponseObject(
+        DemoValidationSchema,
+        data
+      );
+
+      done(new Error("This test should fail"));
     } catch (err) {
       done();
     }
@@ -112,7 +121,12 @@ describe("Test Plain Object validation helper", () => {
     };
 
     try {
-      const validData = validationService.validateResponseObject(DemoValidationSchema, data);
+      const validData = validationService.validateResponseObject(
+        DemoValidationSchema,
+        data
+      );
+
+      done(new Error("This test should fail"));
     } catch (err) {
       done();
     }

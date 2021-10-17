@@ -9,14 +9,14 @@ export function buildHttpErrorMiddleware(
       if (!onHttpError) {
         const val = err as HttpErrorResponse;
         const jsonWithData = {
-          message: val.phrase || "An error occured!",
-          error: val.message,
+          error: val.phrase || "An error occured!",
+          message: val.message,
           data: val.data,
         };
 
         const jsonNoData = {
-          message: val.phrase || "An error occured!",
-          error: val.message,
+          error: val.phrase || "An error occured!",
+          message: val.message,
         };
 
         return res

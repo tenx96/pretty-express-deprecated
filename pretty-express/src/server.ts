@@ -1,46 +1,43 @@
+import { Express, NextFunction, Request, Response, Router } from "express";
 import "reflect-metadata";
-import express, {
-  Express,
-  NextFunction,
-  Request,
-  Response,
-  Router,
-} from "express";
-import { AUTH_CREDENTIAL_KEY } from "./keys";
-import { JwtAuthenticationStrategy } from "./services/authentication.service";
-import { ValidationService } from "./services/validation.interface";
-import { ServerValidationService } from "./services/validation.service";
-
-import { HttpResponse } from "./models/httpresponse";
-import { buildHttpErrorMiddleware } from "./services/errorMiddleware";
 import {
+  executeFucntionWithDecoratedArguments,
+  getAuthenticationMiddleware,
+  getDataFromAllDecoratedFunction,
+  getDataFromAuthenticationStrategy,
+  getDataFromControllerClass,
+} from "./helpers";
+import {
+  AuthenticationErrorHandler,
+  HttpErrorResponseHandler,
   IControllerMetaData,
   IFunctionMetaData,
   IRouterData,
-} from "./interfaces";
-import {
-  getDataFromAuthenticationStrategy,
-  getDataFromControllerClass,
-  getDataFromAllDecoratedFunction,
-  getAuthenticationMiddleware,
-  executeFucntionWithDecoratedArguments,
-} from "./helpers";
-
-import {
+  ResponseValidationError,
   ValidationErrorHandler,
-  AuthenticationErrorHandler,
-  HttpErrorResponseHandler,
 } from "./interfaces";
-import { ValidationError } from "class-validator";
+import { AUTH_CREDENTIAL_KEY } from "./keys";
+import { HttpResponse } from "./models/httpresponse";
+import { JwtAuthenticationStrategy } from "./services/authentication.service";
+import { buildHttpErrorMiddleware } from "./services/errorMiddleware";
+import { ServerValidationService } from "./services/validation.service";
+import { ValidatorOptions } from "class-validator";
+import { ClassTransformOptions } from "class-transformer";
 
+export declare type ResponseTransformOptions = {
+  validate?: boolean;
+  transformOptions?: ClassTransformOptions;
+  validatorOptions?: ValidatorOptions;
+};
 export class Server {
   private authStrategies: Map<string, JwtAuthenticationStrategy>;
-  private validationService: ValidationService;
-
+  private validationService: ServerValidationService;
+  private validatorOptions: ValidatorOptions;
   private requestValidationErrorHandler: ValidationErrorHandler;
-  private responseValidationErrorHandler: ValidationErrorHandler;
+  private responseValidationErrorHandler: ResponseValidationError;
   private authenticationErrorHandler: AuthenticationErrorHandler;
   private httpErrorResponseHandler: HttpErrorResponseHandler;
+  private responseTransformValidateOptions: ResponseTransformOptions;
 
   constructor(protected _app: Express) {
     this.authStrategies = new Map();
@@ -49,23 +46,31 @@ export class Server {
 
   // add setters for error handlers
 
-  public replaceRequestValidationErrorHandler(
+  public setTransformOptions(options: ResponseTransformOptions): void {
+    this.responseTransformValidateOptions = options;
+  }
+
+  public setValidatorOptions(options: ValidatorOptions) {
+    this.validatorOptions = options;
+  }
+
+  public onRequestValidationError(
     handler: ValidationErrorHandler
   ): void {
     this.requestValidationErrorHandler = handler;
   }
 
-  public replaceResponseValidationErrorHandler(
-    handler: ValidationErrorHandler
+  public onResponseValidationError(
+    handler: ResponseValidationError
   ): void {
     this.responseValidationErrorHandler = handler;
   }
 
-  public replaceAuthErrorHandler(handler: AuthenticationErrorHandler): void {
+  public onAuthenticationError(handler: AuthenticationErrorHandler): void {
     this.authenticationErrorHandler = handler;
   }
 
-  public replaceHttpErrorResponseHandler(
+  public onHttpErrorResponse(
     handler: HttpErrorResponseHandler
   ): void {
     this.httpErrorResponseHandler = handler;
@@ -120,9 +125,6 @@ export class Server {
    * @param service service that implements ValidationService to replace default validation service
    *
    */
-  public replaceValidationService(service: ValidationService) {
-    this.validationService = service;
-  }
 
   /**
    *
@@ -137,7 +139,7 @@ export class Server {
     controllerMetaData: IControllerMetaData,
     controller: any,
     authStrategies: Map<string, JwtAuthenticationStrategy>,
-    validationService: ValidationService
+    validationService: ServerValidationService
   ): IRouterData {
     const router: any = Router();
 
@@ -166,7 +168,12 @@ export class Server {
         controllerMetaData.validationData.schema
       ) {
         const { schema, options } = controllerMetaData.validationData;
-        router.use(validationService.validationMiddleware(schema, options));
+        router.use(
+          validationService.validationMiddleware(
+            schema,
+            options || this.validatorOptions
+          )
+        );
       }
 
       functionMetaData.forEach((fdata) => {
@@ -190,7 +197,10 @@ export class Server {
           const { schema, options } = fdata.validationData;
 
           fdata.middlewares.push(
-            validationService.validationMiddleware(schema, options)
+            validationService.validationMiddleware(
+              schema,
+              options || this.validatorOptions
+            )
           );
         }
 
@@ -261,7 +271,7 @@ export class Server {
     next: NextFunction,
     returnedValue: Object | HttpResponse,
     funcData: IFunctionMetaData,
-    validationService: ValidationService
+    validationService: ServerValidationService
   ): void {
     let data: Object;
 
@@ -273,28 +283,45 @@ export class Server {
 
     if (
       funcData &&
-      funcData.resValidationData &&
-      funcData.resValidationData.schema
+      funcData.resTransformAndValidationData &&
+      funcData.resTransformAndValidationData.schema
     ) {
-      const { schema, options, onError } = funcData.resValidationData;
-      const result = validationService.validateResponseObject(
+      const { schema, validatorOptions, transformOptions, validate } =
+        funcData.resTransformAndValidationData;
+      let result;
+
+      // validate if boolean set to true
+
+      if (
+        validate ||
+        (this.responseTransformValidateOptions &&
+          this.responseTransformValidateOptions.validate)
+      ) {
+        try {
+          result = validationService.validateResponseObject(
+            schema,
+            data,
+            validatorOptions ||
+              (this.responseTransformValidateOptions &&
+                this.responseTransformValidateOptions.validatorOptions)
+          );
+        } catch (err) {
+          if (this.responseValidationErrorHandler) {
+            this.responseValidationErrorHandler(err);
+          } else {
+            /** @TODO this maybe changed to log*/
+            console.log(err.toString());
+          }
+        }
+      }
+
+      data = this.validationService.transformPlainToClass(
         schema,
         data,
-        options,
-        onError
+        transformOptions ||
+          (this.responseTransformValidateOptions &&
+            this.responseTransformValidateOptions.transformOptions)
       );
-
-      if (result instanceof Array && result[0] instanceof ValidationError) {
-        // handler error
-        if (this.responseValidationErrorHandler) {
-          return this.responseValidationErrorHandler(result, req, res, next);
-        } else {
-          /** @TODO this maybe changed to log*/
-          throw new Error(result.toString());
-        }
-      } else {
-        data = result;
-      }
     }
 
     if (returnedValue instanceof HttpResponse) {

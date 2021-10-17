@@ -30,11 +30,15 @@ export const AUTH_META_KEYS = {
 
 export const VALIDATOR_META_KEYS = {
   schema: Symbol.for("Validation Schema"),
-  options: Symbol.for("Options"),
+  options: Symbol.for("Validation Options"),
   resSchema: Symbol.for("Response Schema"),
-  resOptions: Symbol.for("Response Options"),
-  resOnError: Symbol.for("Response OnError"),
+  resValidationOptions: Symbol.for("Response Validator Options"),
+  resTransformOptions: Symbol.for("Response Transform Options"),
+  resValidate : Symbol.for("Response Validate")
 };
+
+
+
 
 export const PARAMETER_META_KEYS = {
   requestBody: Symbol.for("request body"),

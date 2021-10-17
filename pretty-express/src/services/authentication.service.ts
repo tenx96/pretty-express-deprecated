@@ -50,7 +50,7 @@ export abstract class JwtAuthenticationStrategy {
         next();
       } catch (err) {
         if (onError) {
-          return onError(err, req, res, next);
+          return onError(role, err, req, res, next);
         } else {
           next(HttpErrorResponse.UNAUTHORIZED("User is unauthorized."));
         }

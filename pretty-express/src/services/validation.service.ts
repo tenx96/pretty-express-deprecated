@@ -1,10 +1,15 @@
-import { plainToClass } from "class-transformer";
 import { ValidationError, ValidatorOptions, Validator } from "class-validator";
 import { json, RequestHandler } from "express";
 import { Request, Response, NextFunction } from "express";
 import { ValidationErrorHandler } from "../interfaces";
-import { ValidationService, Constructor } from "./validation.interface";
-export class ServerValidationService implements ValidationService {
+
+import {
+  ClassConstructor,
+  ClassTransformOptions,
+  plainToClass,
+} from "class-transformer";
+
+export class ServerValidationService {
   /**
    *
    * @param type class decorated with package :class-validator
@@ -12,13 +17,15 @@ export class ServerValidationService implements ValidationService {
    */
 
   validationMiddleware(
-    type: Constructor<any>,
+    type: ClassConstructor<unknown>,
     options?: ValidatorOptions
   ): RequestHandler {
     let validator = new Validator();
 
     return (req, res, next) => {
-      let input: any = plainToClass(type, req.body);
+      let input: any = plainToClass(type, req.body, {
+        ignoreDecorators: true,
+      });
 
       // set forbid unknown as default
       if (!options) {
@@ -64,25 +71,35 @@ export class ServerValidationService implements ValidationService {
   }
 
   validateResponseObject(
-    type: Constructor<any>,
+    type: ClassConstructor<unknown>,
     object: Object,
-    options?: ValidatorOptions
+    validatorOptions?: ValidatorOptions
   ): any | ValidationError[] {
     // set whitelist true to remove extra props
-    if (!options) {
-      options = { whitelist: true };
+    if (!validatorOptions) {
+      validatorOptions = { whitelist: true };
     }
 
     let validator = new Validator();
 
-    let input: any = plainToClass(type, object, options);
+    let input: any = plainToClass(type, object, {
+      ignoreDecorators: true,
+    });
 
-    let errors = validator.validateSync(input, options);
+    let errors = validator.validateSync(input, validatorOptions);
 
     if (errors instanceof Array && errors[0] instanceof ValidationError) {
-      return errors;
+      throw errors;
     } else {
       return input;
     }
+  }
+
+  transformPlainToClass(
+    schema: ClassConstructor<unknown>,
+    obj: any,
+    options?: ClassTransformOptions
+  ) {
+    return plainToClass(schema, obj, options);
   }
 }

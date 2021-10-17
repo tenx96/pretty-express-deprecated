@@ -10,9 +10,13 @@ import { ValidateController } from "./controllers";
 
 let spy: Sinon.SinonSpy;
 let app: Express;
+let server: MyServer;
 describe("VALIDATOR tests", () => {
   before(() => {
-    const server = new MyServer();
+    server = new MyServer();
+    server.setTransformOptions({
+      validate: true,
+    });
     server.addControllersToServer([new ValidateController()]);
     app = server.getApp;
   });
@@ -144,16 +148,16 @@ describe("VALIDATOR tests", () => {
         });
     });
 
-    it("function returns a  invalid object. Should throw error", (done) => {
+    it("function returns a  invalid object. Should pass but error will be logged on console", (done) => {
       request
         .agent(app)
         .get("/validator/validate-res-3")
         .expect("Content-Type", /json/)
         .expect(200)
         .end((err, res) => {
-          if (err) return done();
+          if (err) return done(err);
 
-          done(new Error("Test should fail. But Passed!"));
+          done();
         });
     });
 
@@ -202,16 +206,16 @@ describe("VALIDATOR tests", () => {
         });
     });
 
-    it("function returns a  invalid object. Should throw error", (done) => {
+    it("function returns a  invalid object. Should pass but error will be logged on console", (done) => {
       request
         .agent(app)
         .get("/validator/validate-res-7")
         .expect("Content-Type", /json/)
         .expect(200)
         .end((err, res) => {
-          if (err) return done();
+          if (err) return done(err);
 
-          done(new Error("Test should fail. But Passed!"));
+          done();
         });
     });
 
@@ -226,6 +230,122 @@ describe("VALIDATOR tests", () => {
           expect(res).to.have.ownProperty("body");
           expect(res.body).to.have.keys(["name", "email", "address"]);
           done();
+        });
+    });
+  });
+
+  describe("Vlidation of nested properties", () => {
+    it("includes nested invalid prop. Must remove from result", (done) => {
+      request
+        .agent(app)
+        .post("/validator/validate-res-9")
+        .expect("Content-Type", /json/)
+        .expect(201)
+        .end((err, res) => {
+          if (err) throw done(err);
+          expect(res).to.have.ownProperty("body");
+          expect(res.body).to.have.keys(["name", "email", "address", "nested"]);
+          expect(res.body.nested).to.have.keys(["valid"]);
+          done();
+        });
+    });
+  });
+
+  describe("Transform  Response Test", () => {
+    describe("Response returned as HttpResponse", () => {
+      it("has optional prop `something` . response must not have optional property", (done) => {
+        request
+          .agent(app)
+          .post("/validator/transform-res-1")
+          .expect("Content-Type", /json/)
+          .expect(201)
+          .end((err, res) => {
+            if (err) throw done(err);
+            expect(res).to.have.ownProperty("body");
+            expect(res.body).to.have.keys(["name", "email", "address"]);
+            expect(res.body).to.not.have.keys(["something"]);
+            done();
+          });
+      });
+
+      it("valid response must pass", (done) => {
+        request
+          .agent(app)
+          .post("/validator/transform-res-2")
+          .expect("Content-Type", /json/)
+          .expect(201)
+          .end((err, res) => {
+            if (err) throw done(err);
+            expect(res).to.have.ownProperty("body");
+            expect(res.body).to.have.keys(["name", "email", "address"]);
+            done();
+          });
+      });
+    });
+
+    describe("Response returned directly", () => {
+      it("has optional prop `something` . response must not have optional property", (done) => {
+        request
+          .agent(app)
+          .post("/validator/transform-res-3")
+          .expect("Content-Type", /json/)
+          .expect(200)
+          .end((err, res) => {
+            if (err) throw done(err);
+            expect(res).to.have.ownProperty("body");
+            expect(res.body).to.have.keys(["name", "email", "address"]);
+            expect(res.body).to.not.have.keys(["something"]);
+            done();
+          });
+      });
+
+      it("valid response must pass", (done) => {
+        request
+          .agent(app)
+          .post("/validator/transform-res-4")
+          .expect("Content-Type", /json/)
+          .expect(200)
+          .end((err, res) => {
+            if (err) throw done(err);
+            expect(res).to.have.ownProperty("body");
+            expect(res.body).to.have.keys(["name", "email", "address"]);
+            done();
+          });
+      });
+    });
+  });
+
+  describe("Replace validation errors handlers", () => {
+    before((done) => {
+      server.setTransformOptions({
+        validate: true,
+      });
+
+      server.onResponseValidationError((err) => {
+        console.log("Callback called :: ", err);
+        throw err;
+      });
+      done();
+    });
+
+    after((done) => {
+      server.onResponseValidationError(null);
+      server.setTransformOptions({
+        validate: true,
+      });
+      done();
+    });
+
+    it("function returns a  invalid object. Should throw error", (done) => {
+      request
+        .agent(app)
+        .get("/validator/validate-res-3")
+        .expect("Content-Type", /json/)
+        .expect(200)
+        .end((err, res) => {
+          if (err) return done();
+
+          done(new Error("This should have failed"));
         });
     });
   });
